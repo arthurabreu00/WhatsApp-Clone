@@ -1,21 +1,22 @@
-class WhatsAppController{
+class WhatsAppController {
 
-    constructor(){
+    constructor() {
 
         this.elementsPrototype();
         this.loadElements();
+        this.initEvents();
     }
 
-    loadElements(){
+    loadElements() {
 
-    // Método que Seleciona todos os ID'S contido no HTML
+        // Método que Seleciona todos os ID'S contido no HTML
 
         this.el = {
 
         }
 
         //ForEach que seleciona todos os elementos.
-        document.querySelectorAll('[id]').forEach(element=>{
+        document.querySelectorAll('[id]').forEach(element => {
 
             this.el[Format.getCamelCase(element.id)] = element; // Convesão dos elementos para CamelCase
 
@@ -23,7 +24,7 @@ class WhatsAppController{
 
     } // Fechando o método loadElements()
 
-    elementsPrototype(){
+    elementsPrototype() {
         // O prototype é uma parte mais profunda do JS.
         // Este método é utilzado para a maninupulação do mesmo.
 
@@ -42,10 +43,10 @@ class WhatsAppController{
             return this;
         } // Mostrar/Esconder elemento.
 
-        
-        Element.prototype.on = function (events,fn) {
-            
-            events.split(' ').forEach(event =>{
+
+        Element.prototype.on = function (events, fn) {
+
+            events.split(' ').forEach(event => {
 
                 this.addEventListener(event, fn);
 
@@ -54,9 +55,9 @@ class WhatsAppController{
             return this;
         } // Adicionando mutiplos eventos para o elemento.
 
-        Element.prototype.css = function(styles){
+        Element.prototype.css = function (styles) {
 
-            for(let name in styles){
+            for (let name in styles) {
 
                 this.style[name] = styles[name];
 
@@ -65,29 +66,82 @@ class WhatsAppController{
             return this;
 
         } // Facilitando a troca de estilo CSS, pelo JS. 
-          // É possivel passar um JSON com todos os parametros a serem mudados.
+        // É possivel passar um JSON com todos os parametros a serem mudados.
 
-        Element.prototype.addClass = function(name){
+        Element.prototype.addClass = function (name) {
             this.classList.add(name);
             return this;
         } // Facilitando a adição de classes via JS.
 
-        Element.prototype.removeClass = function(name){
+        Element.prototype.removeClass = function (name) {
             this.classList.remove(name);
             return this;
         } // Facilitando a remoção de classes via JS.
 
-        
-        Element.prototype.toggle = function(name){
+
+        Element.prototype.toggle = function (name) {
             this.classList.toggle(name);
             return this;
         } // Facilitando a remoção/adição de classes via JS.
 
-        Element.prototype.hasClass = function(name){
+        Element.prototype.hasClass = function (name) {
             return this.classList.contains(name);
-            
+
         } // Facilitando a remoção/adição de classes via JS.
 
+
+
     } // Fechando o método elementsPrototype()
+
+
+    initEvents() {
+        // Método de inicialização de todos os eventos.
+        this.el.myPhoto.on('click', () => {
+
+            this.closeAllLeftPanels();
+            this.el.panelEditProfile.show('open');
+
+            setTimeout(()=>{
+                this.el.panelEditProfile.addClass('open');
+            },300)
+            
+            
+
+        });
+
+        this.el.btnNewContact.on('click', () => {
+
+            this.closeAllLeftPanels();
+            this.el.panelAddContact.show('open');
+
+            setTimeout(() => {
+                this.el.panelAddContact.addClass('open');
+            }, 300);
+        });
+
+        this.el.btnClosePanelEditProfile.on('click', () => {
+
+            this.el.panelEditProfile.removeClass('open')
+
+        });
+
+
+        this.el.btnClosePanelAddContact.on('click', () => {
+
+            this.el.panelAddContact.removeClass('open')
+
+        });
+
+    } // Fechando o método initEvents()
+
+
+    closeAllLeftPanels() {
+        // Método para fechar todas as telas a direita, evitando sobrecarregamento e bugs.
+
+        this.el.panelEditProfile.hide();
+        this.el.panelAddContact.hide();
+
+    } // Fechando o método initEvents()
+
 
 } // Fechando a classe WhatsAppController();
