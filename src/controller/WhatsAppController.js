@@ -210,9 +210,9 @@ class WhatsAppController {
 
             this.el.btnAttach.on('click', e =>{
 
-                e.stopPropagation();
+                e.stopPropagation(); // Fim do efeito cascata.
                 this.el.menuAttach.addClass('open');
-                document.addEventListener('click',this.closeMenuAttach.bind(this));
+                document.addEventListener('click',this.closeMenuAttach.bind(this)); // .bind(), Escopo a sua escolha.
 
             }); // Clicando no clip e suas opções de menu, para contato,arquivos,audio,imagens,etc.
 
@@ -262,8 +262,9 @@ class WhatsAppController {
 
         document.removeEventListener('click', this.closeMenuAttach);
         this.el.menuAttach.removeClass('open');
-
-    }
+        
+        
+    }// Método(função) para o fechamento do menu 'clip'.
 
 
 } // Fechando a classe WhatsAppController();
