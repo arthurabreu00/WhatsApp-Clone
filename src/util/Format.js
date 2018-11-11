@@ -15,4 +15,19 @@ class Format{
 
     }
 
+
+    static toTime(duration){
+        
+        let seconds = parseInt((duration/ 1000) % 60).toString().padStart(2,'0');
+        let minutes = parseInt((duration / (1000 * 60)) % 60);
+        let hours = parseInt((duration / (1000 * 60 * 60)) % 24);
+
+        if(hours > 0){
+            return hours + ':' + minutes.toString().padStart(2,'0') + ':' + seconds;
+        }else{
+            return minutes + ':' + seconds;
+        }
+
+    }
+
 }

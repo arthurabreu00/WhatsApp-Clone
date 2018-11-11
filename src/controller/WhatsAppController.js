@@ -288,9 +288,62 @@ class WhatsAppController {
             }); // Fechando o modal de escolha de contatos.
 
 
-        /* FIM -- MÉTODOS RELACIONADOSAO CLIPE */    
+            /* FIM -- MÉTODOS RELACIONADOS AO CLIPE */
+
+            this.el.btnSendMicrophone.on("click",()=>{
+
+                this.el.recordMicrophone.show(); // Abrindo interface de gravação de audio.
+                this.el.btnSendMicrophone.hide(); // Escodendo o proprio microfone, para evitar conflitos de interface.
+
+                this.startRecordMicrophoneTime();
+
+
+            }); // Barra de mensagens ao clicar no microfone.
+
+            this.el.btnCancelMicrophone.on('click',()=>{
+
+                // Botão vermelho.
+
+                this.closeRecordMicrophone(); // Voltando a interface padrão, NÃO ENVIOU AUDIO.
+                
+                
+            })// Interface de gravação de audio botão cancelar.
+
+
+            this.el.btnFinishMicrophone.on('click',()=>{
+
+                // Botão verde.
+
+                this.closeRecordMicrophone(); // Voltando a interface padrão, após envio do audio.
+
+            });
+
+            /* INICIO -- MÉTODOS RELACIONADOS AO MICROFONE */
+
+        
+
+        /* FIM -- MÉTODOS RELACIONADOS AO MICROFONE */
 
     } // Fechando o método initEvents()
+
+    startRecordMicrophoneTime(){
+
+        let start = Date.now();
+
+        this._recordMicrophoneInterval = setInterval(()=>{
+
+            let duration = Date.now() - start
+
+            this.el.recordMicrophoneTimer.innerHTML = Format.toTime(duration);
+
+        },100);
+    }
+
+    closeRecordMicrophone(){
+        this.el.recordMicrophone.hide();
+        this.el.btnSendMicrophone.show(); 
+        clearInterval(this._recordMicrophoneInterval);
+    }
 
     closeAllMainPanel(){
 
@@ -312,7 +365,9 @@ class WhatsAppController {
 
     } // Fechando o método initEvents()
 
-    closeMenuAttach(e){
+    closeMenuAttach(){
+
+           // Método para fechar o menu anexar/clip.
 
         document.removeEventListener('click', this.closeMenuAttach);
         this.el.menuAttach.removeClass('open');
