@@ -193,7 +193,7 @@ class WhatsAppController {
 
         /* FIM -- MÉTODOS RELACIONADOS A INSERÇÃO DE NOVOS CONTATOS */
 
-        /* INICIO -- MÉTODOS RELACIONADOS A VISUALIZAÇÃO DAS CONVERSAS */
+        /* INICIO -- MÉTODOS RELACIONADOS AO CLIPE*/
             
             this.el.contactsMessagesList.querySelectorAll('.contact-item').forEach(item =>{
 
@@ -218,36 +218,90 @@ class WhatsAppController {
 
             this.el.btnAttachPhoto.on('click',() =>{
 
-                // this.el.inputPhoto.click();
-                console.log('Foto');
-
+                this.el.inputPhoto.click();
             }); // Dentro do clip, botão para adicionar fotos a conversa.
+
+            this.el.inputPhoto.on('change', e=>{
+
+                console.log(this.el.inputPhoto.files);
+
+                [...this.el.inputPhoto.files].forEach(file=>{
+                    console.log(file);
+                })
+
+            }); // Observando mudanças e arquivos enviados via botão foto.
 
             
             this.el.btnAttachCamera.on('click',() =>{
 
-                console.log('Camera');
+                this.closeAllMainPanel(); // Fechando todos os paineis anteriores, possibiltando o prox comando.
+                this.el.panelCamera.addClass('open'); // Abrindo a classe, (aparecer);
+                this.el.panelCamera.css({
+                    'height': 'calc(100% - 120px)'
+                });
 
             }); // Dentro do clip, botão para acionar cameras e tirar fotos e enviar diretamente a conversa.
 
+
+            this.el.btnClosePanelCamera.on('click',()=>{
+
+                this.closeAllMainPanel();
+                this.el.panelMessagesContainer.show();
+
+            }) // Fechando o painel da câmera. Voltando a tela de convesa;
+
+            this.el.btnTakePicture.on('click',()=>{
+                
+                console.log("Take Picture: ",'XIIISSS')
+
+            }); // Botão dentro da painel da câmera, para tirar a foto.
+
+
             this.el.btnAttachDocument.on('click',() =>{
-
-                console.log('Documento');
-
+                this.closeAllMainPanel();
+                this.el.panelDocumentPreview.addClass('open');
+                this.el.panelDocumentPreview.css({
+                    'height': 'calc(100% - 120px)'
+                });
             }); // Dentro do clip, botão para adicionar documentos(PDF,DOC,...) a conversa.
+
+            this.el.btnClosePanelDocumentPreview.on('click',()=>{
+                this.closeAllMainPanel();
+                this.el.panelMessagesContainer.show();
+            });  // Fechando o painel de documentos. Voltando a tela de convesa;
+
+            this.el.btnSendDocument.on('click',()=>{
+
+                console.log('Enviando documento...');
+
+            }); // Enviando o documento dentro da convesa. 
 
 
             this.el.btnAttachContact.on('click',() =>{
 
-                console.log('Contato');
+                this.el.modalContacts.show(); // Abrindo o modal, para escolher os contatos.
 
             }); // Dentro do clip, botão para adicionar contatos a conversa.
 
+            this.el.btnCloseModalContacts.on('click',()=>{
+                this.el.modalContacts.hide();
+            }); // Fechando o modal de escolha de contatos.
 
 
-        /* FIM -- MÉTODOS RELACIONADOS A VISUALIZAÇÃO DAS CONVERSAS/CONTATOS */ 
+        /* FIM -- MÉTODOS RELACIONADOSAO CLIPE */    
 
     } // Fechando o método initEvents()
+
+    closeAllMainPanel(){
+
+        // Este método fecha todas as telas da parte central,
+        // É importante, o mesmo ser o primeiro a ser chamado.
+
+        this.el.panelMessagesContainer.hide();
+        this.el.panelDocumentPreview.removeClass('open');
+        this.el.panelCamera.removeClass('open');
+  
+    } // Fechando o método closeAllMainPanel()q
 
 
     closeAllLeftPanels() {
