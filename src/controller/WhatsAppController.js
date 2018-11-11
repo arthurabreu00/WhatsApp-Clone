@@ -77,7 +77,7 @@ class WhatsAppController {
         } // Facilitando a remoção de classes via JS.
 
 
-        Element.prototype.toggle = function (name) {
+        Element.prototype.toggleClass = function (name) {
             this.classList.toggle(name);
             return this;
         } // Facilitando a remoção/adição de classes via JS.
@@ -288,7 +288,9 @@ class WhatsAppController {
             }); // Fechando o modal de escolha de contatos.
 
 
-            /* FIM -- MÉTODOS RELACIONADOS AO CLIPE */
+        /* FIM -- MÉTODOS RELACIONADOS AO CLIPE */
+
+        /* INICIO -- MÉTODOS RELACIONADOS AO MICROFONE */
 
             this.el.btnSendMicrophone.on("click",()=>{
 
@@ -316,13 +318,109 @@ class WhatsAppController {
 
                 this.closeRecordMicrophone(); // Voltando a interface padrão, após envio do audio.
 
-            });
-
-            /* INICIO -- MÉTODOS RELACIONADOS AO MICROFONE */
-
-        
+            }); // Interface de gravação de audio botão enviar/confirmar.
 
         /* FIM -- MÉTODOS RELACIONADOS AO MICROFONE */
+            
+        /* INICIO -- MÉTODOS RELACIONADOS AO CAMPO DE MENSAGEM/TEXTO */
+
+            this.el.inputText.on('keypress',e=>{
+               
+                if(e.key === 'Enter' && !e.crtlKey){
+                    this.el.btnSend.click();
+                    e.preventDefault();
+                }
+
+            }); // Verificando se apertou enter e forçando o click para envio da mensagem.
+
+            this.el.inputText.on('keyup',()=>{
+
+                if(!this.el.inputText.innerHTML.length){
+                    this.el.inputPlaceholder.show();
+                    this.el.btnSend.hide();
+                    this.el.btnSendMicrophone.show();
+                    
+
+                    // Bloco de texto vazio;
+                    // Troca de botão enviar para microfone e esconder placeholder.
+
+                }else{
+                    this.el.inputPlaceholder.hide();
+                    this.el.btnSend.show();
+                    this.el.btnSendMicrophone.hide();
+
+
+                    // Bloco de texto com algo;
+                    // Troca de botão microfone para enviar e esconder placeholder.
+                }
+
+            }); // Interface de texto/envio de mensagens.
+
+            this.el.btnSend.on('click',()=>{
+
+                let txt = this.el.inputText.innerHTML;
+                console.log(txt);
+                this.el.inputText.innerHTML = "";
+                this.el.inputPlaceholder.show();
+                    
+            }) // Botão de envio de mensagem.
+
+
+
+        /* FIM -- MÉTODOS RELACIONADOS AO CAMPO DE MENSAGEM/TEXTO */
+
+        /* INICIO -- MÉTODOS RELACIONADOS AO CAMPO DE EMOJIS */
+            
+            this.el.btnEmojis.on('click',()=>{
+
+                this.el.panelEmojis.toggleClass('open'); // Abrindo e fechando a aba de emojis
+
+            }); // Aba de emojis.
+
+
+            this.el.panelEmojis.querySelectorAll('.emojik').forEach(emoji =>{
+
+                emoji.on('click',()=>{
+                    console.log(emoji.dataset.unicode);
+
+                    let img = this.el.imgEmojiDefault.cloneNode();
+                    
+                    img.style.cssText = emoji.style.cssText;
+                    img.dataset.unicode = emoji.dataset.unicode;    
+                    img.alt = emoji.dataset.unicode; 
+
+                    emoji.classList.forEach(name =>{
+
+                        img.classList.add(name);
+
+                    });
+
+                    let cursor = window.getSelection();
+
+                    if(!cursor.focusNode || cursor.focusNode.id != 'input-text'){
+
+                        this.el.inputText.focus();
+                        cursor = window.getSelection();
+                    }
+
+                    let range = document.createRange();
+                    range = cursor.getRangeAt(0);
+                    range.deleteContents();
+                    
+                    let frag = document.createDocumentFragment();
+                    frag.appendChild(img);
+
+                    range.insertNode(frag);
+
+                    range.setStartAfter(img);
+
+                    this.el.inputText.dispatchEvent(new Event('keyup'));
+
+                }); 
+
+            }) // Selecionando todos os emojis e Observando os emojis, se vão ser clicados.
+        
+        /* FIM -- MÉTODOS RELACIONADOS AO CAMPO DE MENSAGEM/TEXTO */   
 
     } // Fechando o método initEvents()
 
