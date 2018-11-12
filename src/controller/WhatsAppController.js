@@ -1,5 +1,8 @@
 import {Format} from './../util/Format';
 import {CameraController} from './CameraController';
+import {DocumentPreviewController} from './DocumentPreviewController';
+
+// Oxeford - dobri next
 
 export class WhatsAppController {
 
@@ -290,8 +293,84 @@ export class WhatsAppController {
                 this.el.panelDocumentPreview.addClass('open');
                 this.el.panelDocumentPreview.css({
                     'height': 'calc(100% - 120px)'
-                });
+                }); // Corrigindo posição.
+
+                this.el.inputDocument.click(); // Abrir aba de envio de documentos.
+
             }); // Dentro do clip, botão para adicionar documentos(PDF,DOC,...) a conversa.
+
+            this.el.inputDocument.on('change', () => {
+                
+                // If verificando se algum documento/imagem foi selecionado de fato.
+
+                if (this.el.inputDocument.files.length) {
+                    this.el.panelDocumentPreview.css({
+                        'height': '1%'
+                    });
+                    let file = this.el.inputDocument.files[0]; // Seleciona apenas um documento.
+
+                    this._documentPreviewController = new DocumentPreviewController(file); // Instanciando classe de visualização de documentos.
+
+                    // O método getPreviewData da classe DocumentPreviewController retorna uma promessa.
+
+                    this._documentPreviewController.getPreviewData().then(result =>{
+                        // Caso de sucesso.
+
+                        this.el.panelDocumentPreview.css({
+                            'height': 'calc(100%-120px)'
+                        });
+
+                        this.el.imgPanelDocumentPreview.src = result.src;
+                        this.el.infoPanelDocumentPreview.innerHTML = result.info;
+                        this.el.imagePanelDocumentPreview.show();
+                        this.el.filenamePanelDocumentPreview.hide();
+
+                    }).catch(err =>{
+                        // Caso seja um arquivo não-pré definido
+
+                        this.el.panelDocumentPreview.css({
+                            'height': 'calc(100%-120px)'
+                        });
+
+                        switch (file.type) {
+                            case 'application/msword':
+                            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                            this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-doc';
+                                break;
+
+                            case 'application/zip':
+                            case 'application/x-zip-compressed':
+                            this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-zip';
+
+                            break;
+                            
+                            case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+                            case 'application/vnd.ms-excel':
+                            this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-xls';
+
+                            break;
+
+                            case 'application/vnd.ms-powerpoint':
+                            case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+                            this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-ppt';
+
+                            default:
+                                this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-generic';
+                                break;
+                        }
+                        console.log(file)
+                        this.el.filenamePanelDocumentPreview.innerHTML = file.name;
+                        this.el.imagePanelDocumentPreview.hide();
+                        this.el.filePanelDocumentPreview.show();
+                        
+                        // Caso de erro.
+                        // console.error(err); 
+                    });
+
+                }
+
+            }); // Envio da foto e apareciçam da mesma ao usuario.
+
 
             this.el.btnClosePanelDocumentPreview.on('click',()=>{
                 this.closeAllMainPanel();
