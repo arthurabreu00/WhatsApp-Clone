@@ -240,6 +240,9 @@ class WhatsAppController {
                     'height': 'calc(100% - 120px)'
                 });
 
+                this._camera = new CameraController(this.el.videoCamera); // Passando o atributo necessário.
+
+
             }); // Dentro do clip, botão para acionar cameras e tirar fotos e enviar diretamente a conversa.
 
 
