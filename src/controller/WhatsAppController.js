@@ -304,8 +304,9 @@ export class WhatsAppController {
                 // If verificando se algum documento/imagem foi selecionado de fato.
 
                 if (this.el.inputDocument.files.length) {
+
                     this.el.panelDocumentPreview.css({
-                        'height': '1%'
+                        'height': 'calc(100% - 120px)'
                     });
                     let file = this.el.inputDocument.files[0]; // Seleciona apenas um documento.
 
@@ -399,7 +400,7 @@ export class WhatsAppController {
 
         /* INICIO -- MÉTODOS RELACIONADOS AO MICROFONE */
 
-            this.el.btnSendMicrophone.on("click",()=>{
+            this.el.btnSendMicrophone.on('click',()=>{
 
                 this.el.recordMicrophone.show(); // Abrindo interface de gravação de audio.
                 this.el.btnSendMicrophone.hide(); // Escodendo o proprio microfone, para evitar conflitos de interface.
