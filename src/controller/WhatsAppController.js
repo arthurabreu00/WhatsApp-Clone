@@ -264,25 +264,23 @@ export class WhatsAppController {
                 this.el.pictureCamera.src = dataUrl; // Mudando o atributo, para a foto tirada.
                 this.el.pictureCamera.show(); // Mostrando a foto recebida;
                 this.el.videoCamera.hide(); // Escodendo o vídeo, permitindo aparecer a foto.
-                this.el.bntReshootPanelCamera.show(); // Botão para tirar a foto novamente.
+                this.el.btnReshootPanelCamera.show(); // Botão para tirar a foto novamente.
                 this.el.containerTakePicture.hide(); // Escodendo o botão de tirar a foto, para evitar bugs.
                 this.el.containerSendPicture.show(); // Botão para enviar a foto a conversa.
 
             }); // Botão dentro da painel da câmera, para tirar a foto.
 
-            this.el.bntReshootPanelCamera.on('click',()=>{
+            this.el.btnReshootPanelCamera.on('click',()=>{
 
-                // this.el.pictureCamera.hide(); // Mostrando a foto recebida;
-                // this.el.videoCamera.show(); // Escodendo o vídeo, permitindo aparecer a foto.
-                // this.el.bntReshootPanelCamera.hide(); // Botão para tirar a foto novamente.
-                // this.el.containerTakePicture.show(); // Escodendo o botão de tirar a foto, para evitar bugs.
-                // this.el.containerSendPicture.hide(); // Botão para enviar a foto a conversa.
-
-                this.el.btnAttachCamera.click(); // Forçando o click, resetando as configurações.
+                this.el.pictureCamera.hide(); // Mostrando a foto recebida;
+                this.el.videoCamera.show(); // Escodendo o vídeo, permitindo aparecer a foto.
+                this.el.bntReshootPanelCamera.hide(); // Botão para tirar a foto novamente.
+                this.el.containerTakePicture.show(); // Escodendo o botão de tirar a foto, para evitar bugs.
+                this.el.containerSendPicture.hide(); // Botão para enviar a foto a conversa.
 
             })
 
-            this.el.sendPicture.on('click',()=>{
+            this.el.containerSendPicture.on('click',()=>{
                 console.log('Enviando a foto...', this.el.pictureCamera.src );
             })
 
