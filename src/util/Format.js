@@ -1,4 +1,4 @@
-class Format{
+export class Format{
 
 
     // Métodos os estaticos não é necessário declarar a classe;
