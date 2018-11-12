@@ -251,16 +251,40 @@ export class WhatsAppController {
 
             this.el.btnClosePanelCamera.on('click',()=>{
 
-                this.closeAllMainPanel();
-                this.el.panelMessagesContainer.show();
+                this.closeAllMainPanel(); // Fechando os paneis sobre salentes.
+                this.el.panelMessagesContainer.show(); // Tela de conversa
+                this._camera.stop(); // Parando a gravação do vídeo.
 
             }) // Fechando o painel da câmera. Voltando a tela de convesa;
 
             this.el.btnTakePicture.on('click',()=>{
                 
-                console.log("Take Picture: ",'XIIISSS')
+                let dataUrl = this._camera.takePicture(); // Obtendo o Basex64 da foto.
+                
+                this.el.pictureCamera.src = dataUrl; // Mudando o atributo, para a foto tirada.
+                this.el.pictureCamera.show(); // Mostrando a foto recebida;
+                this.el.videoCamera.hide(); // Escodendo o vídeo, permitindo aparecer a foto.
+                this.el.bntReshootPanelCamera.show(); // Botão para tirar a foto novamente.
+                this.el.containerTakePicture.hide(); // Escodendo o botão de tirar a foto, para evitar bugs.
+                this.el.containerSendPicture.show(); // Botão para enviar a foto a conversa.
 
             }); // Botão dentro da painel da câmera, para tirar a foto.
+
+            this.el.bntReshootPanelCamera.on('click',()=>{
+
+                // this.el.pictureCamera.hide(); // Mostrando a foto recebida;
+                // this.el.videoCamera.show(); // Escodendo o vídeo, permitindo aparecer a foto.
+                // this.el.bntReshootPanelCamera.hide(); // Botão para tirar a foto novamente.
+                // this.el.containerTakePicture.show(); // Escodendo o botão de tirar a foto, para evitar bugs.
+                // this.el.containerSendPicture.hide(); // Botão para enviar a foto a conversa.
+
+                this.el.btnAttachCamera.click(); // Forçando o click, resetando as configurações.
+
+            })
+
+            this.el.sendPicture.on('click',()=>{
+                console.log('Enviando a foto...',this.el.pictureCamera.src );
+            })
 
 
             this.el.btnAttachDocument.on('click',() =>{
@@ -349,7 +373,7 @@ export class WhatsAppController {
 
                     // Bloco de texto vazio;
                     // Troca de botão enviar para microfone e esconder placeholder.
-
+ 
                 }else{
                     this.el.inputPlaceholder.hide();
                     this.el.btnSend.show();
