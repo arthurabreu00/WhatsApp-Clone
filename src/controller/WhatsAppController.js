@@ -283,7 +283,7 @@ export class WhatsAppController {
             })
 
             this.el.sendPicture.on('click',()=>{
-                console.log('Enviando a foto...',this.el.pictureCamera.src );
+                console.log('Enviando a foto...', this.el.pictureCamera.src );
             })
 
 
