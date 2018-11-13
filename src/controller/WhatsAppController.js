@@ -1,5 +1,6 @@
 import {Format} from './../util/Format';
 import {CameraController} from './CameraController';
+import {MicrophoneController} from './MicrophoneController';
 import {DocumentPreviewController} from './DocumentPreviewController';
 
 // Oxeford - dobri next
@@ -406,8 +407,7 @@ export class WhatsAppController {
                 this.el.btnSendMicrophone.hide(); // Escodendo o proprio microfone, para evitar conflitos de interface.
 
                 this.startRecordMicrophoneTime();
-
-
+                this._microphoneController = new MicrophoneController();
             }); // Barra de mensagens ao clicar no microfone.
 
             this.el.btnCancelMicrophone.on('click',()=>{
@@ -546,9 +546,12 @@ export class WhatsAppController {
     }
 
     closeRecordMicrophone(){
+        
+        this._microphoneController.stop();
         this.el.recordMicrophone.hide();
         this.el.btnSendMicrophone.show(); 
         clearInterval(this._recordMicrophoneInterval);
+        
     }
 
     closeAllMainPanel(){
