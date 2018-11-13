@@ -1,5 +1,9 @@
-export class MicrophoneController{
+import { ClassEvent } from "../util/ClassEvent";
+
+export class MicrophoneController extends ClassEvent{
     constructor(){
+
+        super();
 
         navigator.mediaDevices.getUserMedia({
             audio: true
@@ -13,6 +17,8 @@ export class MicrophoneController{
             //Atráves de uma tag <audio> a será direcionando com o atributo src.
 
             audio.play(); // O método play funciona executando uma URL. Este método toca de fato o audio.
+
+            this.trigger('play',audio, this._stream,);
 
         }).catch(err=>{
             console.error(err);
