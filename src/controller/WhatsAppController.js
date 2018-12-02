@@ -420,7 +420,7 @@ export class WhatsAppController {
             this.el.btnCancelMicrophone.on('click',()=>{
 
                 // Botão vermelho.
-
+                this._microphoneController.stopRecord(); // Parando a gravação
                 this.closeRecordMicrophone(); // Voltando a interface padrão, NÃO ENVIOU AUDIO.
                 
                 
@@ -430,7 +430,7 @@ export class WhatsAppController {
             this.el.btnFinishMicrophone.on('click',()=>{
 
                 // Botão verde.
-
+                this._microphoneController.stopRecord(); // Parando a gravação
                 this.closeRecordMicrophone(); // Voltando a interface padrão, após envio do audio.
 
             }); // Interface de gravação de audio botão enviar/confirmar.

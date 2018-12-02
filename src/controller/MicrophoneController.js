@@ -52,7 +52,7 @@ export class MicrophoneController extends ClassEvent{
 
         if(this.isAvailabel()){
 
-            this._mediaRecorder = new MediaRecorder(this._stream,this._mimeType);
+            this._mediaRecorder = new MediaRecorder(this._stream,{mimeType: this._mimeType});
 
             // A classe me retorna pedaços gravados ('chuncks').
             this._recordChuncks = [];
@@ -62,9 +62,9 @@ export class MicrophoneController extends ClassEvent{
                 // Se tiver algo gravado, junto aos elementos em um array (vetor).
                 if(e.data.size > 0) this._recordChuncks.push(e.data)
 
-            });
+            }); 
 
-            this._mediaRecorder.addEventListener('stop',e =>{
+            this._mediaRecorder.addEventListener('stop',e =>{   
 
                 // Ao parar o audio é necessário, gerar um arquivo de audio.
 
@@ -80,14 +80,25 @@ export class MicrophoneController extends ClassEvent{
                 let file = new File([blob],filename,{
 
                     type:this._mimeType,
-                    lastModified: Data.now()
+                    lastModified: Date.now()
 
                 }); // File precisa de array de binarios, O nome do arquivo e os metaDados do mesmo.
                     // A classe file, transforma binarios em arquivos e a união dos demais, dados.
 
                 console.log(file);  
 
+                let reader = new FileReader();
+
+                reader.onload = e =>{
+                    let audio = new Audio(reader);
+                    audio.play();
+                }
+
+                reader.readAsDataURL(file);
+
             });
+
+            this._mediaRecorder.start();
         }
 
     }
