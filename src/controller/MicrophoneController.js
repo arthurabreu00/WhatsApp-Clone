@@ -90,7 +90,7 @@ export class MicrophoneController extends ClassEvent{
                 let reader = new FileReader();
 
                 reader.onload = e =>{
-                    let audio = new Audio(reader);
+                    let audio = new Audio(reader.result);
                     audio.play();
                 }
 
