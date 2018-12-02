@@ -410,7 +410,7 @@ export class WhatsAppController {
                 this._microphoneController = new MicrophoneController();
 
                 this._microphoneController.on('play',audio =>{
-
+                    this._microphoneController.startRecord();
                     console.log('Recebi o evento play',audio);
 
                 });
