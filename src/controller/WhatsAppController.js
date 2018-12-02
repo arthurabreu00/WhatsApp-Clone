@@ -92,7 +92,7 @@ export class WhatsAppController {
         Element.prototype.hasClass = function (name) {
             return this.classList.contains(name);
 
-        } // Facilitando a remoção/adição de classes via JS.
+        } // Verificando a existencia da classe via JS.
 
         HTMLFormElement.prototype.getForm = function(){
 
