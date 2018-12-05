@@ -57,7 +57,7 @@ export class MicrophoneController extends ClassEvent{
             // A classe me retorna pedaços gravados ('chuncks').
             this._recordChuncks = [];
 
-            this._mediaRecorder.addEventListener('dataavalilabel', e=>{
+            this._mediaRecorder.addEventListener('dataavailable', e=>{
 
                 // Se tiver algo gravado, junto aos elementos em um array (vetor).
                 if(e.data.size > 0) this._recordChuncks.push(e.data)
