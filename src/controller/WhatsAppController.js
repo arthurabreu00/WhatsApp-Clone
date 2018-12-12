@@ -2,17 +2,38 @@ import {Format} from './../util/Format';
 import {CameraController} from './CameraController';
 import {MicrophoneController} from './MicrophoneController';
 import {DocumentPreviewController} from './DocumentPreviewController';
-
-// Oxeford - dobri next
+import {Firebase} from './../util/Firebase';
 
 export class WhatsAppController {
 
     constructor() {
 
+        console.log('Server OK')
+        
+       
         this.elementsPrototype();
         this.loadElements();
         this.initEvents();
+        this._firebase = new Firebase();
+        this.initAuth();
     }
+
+    initAuth(){
+
+        this.el.appContent.hide();
+
+        this._firebase.initAuth()
+            .then((res) =>{
+                this._user = res.user;
+                this.el.appContent.css({
+                    display:'flex'
+                });
+            })
+            .catch(err =>{
+                console.error(err);
+            });
+    }
+
 
     loadElements() {
 
@@ -405,14 +426,15 @@ export class WhatsAppController {
 
                 this.el.recordMicrophone.show(); // Abrindo interface de gravação de audio.
                 this.el.btnSendMicrophone.hide(); // Escodendo o proprio microfone, para evitar conflitos de interface.
-
-                this.startRecordMicrophoneTime();
+                
                 this._microphoneController = new MicrophoneController();
 
-                this._microphoneController.on('play',audio =>{
+                this._microphoneController.on("ready", () =>{
                     this._microphoneController.startRecord();
-                    console.log('Recebi o evento play',audio);
+                });
 
+                this._microphoneController.on('recordtimer', (timer) =>{
+                    this.el.recordMicrophoneTimer.innerHTML = Format.toTime(timer);
                 });
 
             }); // Barra de mensagens ao clicar no microfone.
@@ -539,22 +561,10 @@ export class WhatsAppController {
 
     } // Fechando o método initEvents()
 
-    startRecordMicrophoneTime(){
 
-        let start = Date.now();
-
-        this._recordMicrophoneInterval = setInterval(()=>{
-
-            let duration = Date.now() - start
-
-            this.el.recordMicrophoneTimer.innerHTML = Format.toTime(duration);
-
-        },100);
-    }
 
     closeRecordMicrophone(){
-        
-        this._microphoneController.stop();
+
         this.el.recordMicrophone.hide();
         this.el.btnSendMicrophone.show(); 
         clearInterval(this._recordMicrophoneInterval);

@@ -23,7 +23,7 @@ export class MicrophoneController extends ClassEvent{
 
             audio.play(); // O método play funciona executando uma URL. Este método toca de fato o audio. 
 
-            this.trigger('play',audio, this._stream,);
+            this.trigger('ready',audio, this._stream,);
 
         }).catch(err=>{
             console.error(err);
@@ -85,20 +85,10 @@ export class MicrophoneController extends ClassEvent{
                 }); // File precisa de array de binarios, O nome do arquivo e os metaDados do mesmo.
                     // A classe file, transforma binarios em arquivos e a união dos demais, dados.
 
-                console.log(file);  
-
-                let reader = new FileReader();
-
-                reader.onload = e =>{
-                    let audio = new Audio(reader.result);
-                    audio.play();
-                }
-
-                reader.readAsDataURL(file);
-
             });
 
-            this._mediaRecorder.start();
+            this._mediaRecorder.start(); // Iniciar gravação
+            this.startTimer(); // Iniciar Temporizador.
         }
 
     }
@@ -110,8 +100,28 @@ export class MicrophoneController extends ClassEvent{
 
             this._mediaRecorder.stop(); // Parando de gravar.
             this.stop(); // Parando de reproduizir.
+            this.stopTimer() // Parando temporizador do audio
         }
 
     }
+
+    startTimer(){
+        // Esté metodo inicia e contabiliza o tempo de gravação
+        let start = Date.now(); // Guardando o inicio
+
+        this._recordMicrophoneInterval = setInterval(()=>{
+
+             // Calculo: momento atual - inicio;
+            this.trigger('recordtimer',(Date.now() - start)); // Declarando um novo evento e o enviando;
+            
+
+        },100);
+    }
+
+    stopTimer(){
+        // Esté metodo finaliza o tempo de gravação
+        clearInterval(this._recordMicrophoneInterval); // Limpando o intervalo
+    }
+
 
 }
