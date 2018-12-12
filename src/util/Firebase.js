@@ -17,7 +17,7 @@ export class Firebase {
 
     init(){
           // Inicializando o Firebase
-        if(!this.initializeApp){
+        if(!window.initializeFirebase){
             // Verificando se ja foi iniciado. Para evitar erros e sobre-cargas
             firebase.initializeApp(this._config);
 
@@ -25,7 +25,7 @@ export class Firebase {
                 timestampsInSnapshots : true
             })
 
-            this.initializeApp = true;
+            window.initializeFirebase = true;
         }
           
     }

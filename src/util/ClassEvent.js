@@ -10,7 +10,7 @@ export class ClassEvent{
     on(eventName,fn){
 
         if(!this._events[eventName]) this._events[eventName] = new Array();
-        this._events[eventName].push(fn) // Adicionando eventos, ao meu array de eventos.
+        this._events[eventName].push(fn); // Adicionando eventos, ao meu array de eventos.
     } // Fim do método on()
 
     trigger(){
