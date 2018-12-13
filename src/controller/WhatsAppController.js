@@ -211,8 +211,17 @@ export class WhatsAppController {
             }) // Método para Verificando as teclas inseridas, no formulário de edição do perfil.
 
             this.el.btnSavePanelEditProfile.on('click',()=>{
+                
+                this.el.btnSavePanelEditProfile.disabled = true;
 
-                console.log(this.el.inputNamePanelEditProfile.innerHTML)
+                this._user.name = app.el.inputNamePanelEditProfile.innerHTML;
+                console.log(this._user.name );
+
+                this._user.save().then(()=>{
+                    this.el.btnSavePanelEditProfile.disabled = false;
+                }).catch(err=>{
+                    console.error(err);
+                });
 
             })
 
