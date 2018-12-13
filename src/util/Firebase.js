@@ -30,21 +30,24 @@ export class Firebase {
           
     }
 
+    // Método estatico, de acesso facil ao banco de dados e suas funcionalidades
     static db(){
         return firebase.firestore();
     }
 
     static hd(){
         return firebase.storage();
-    }
+    }   
 
+    // Parte da autentificação do usuario
     initAuth(){
         return new Promise((s,f)=>{
-
+            // Escolhando um provedor de usuario, no caso o google/gmail.
             let provider = new firebase.auth.GoogleAuthProvider();
 
             firebase.auth().signInWithPopup(provider)
                 .then(result =>{
+                    // Obtendo token de acesso e outras informações necessárias.
                     let token = result.credential.accessToken;
                     let user = result.user;
 

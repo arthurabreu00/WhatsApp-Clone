@@ -4,7 +4,6 @@ export class ClassEvent{
     
     constructor(){
         this._events = {};
-
     }
 
     on(eventName,fn){

@@ -25,33 +25,36 @@ export class WhatsAppController {
 
         this._firebase.initAuth()
             .then((res) =>{
-                this._user = new User();
-
-                let userRef = User.findByEmail(res.user.email);
+                this._user = new User(res.user.email);
 
                 this._user.on('datachange', data=>{
                     document.querySelector('title').innerHTML = data.name + ' - WhatsApp Clone';
+
+                    this.el.inputNamePanelEditProfile.innerHTML = data.name;
 
                     if(data.photo){
                         let photo = this.el.imgPanelEditProfile;
                         photo.src = data.photo;
                         photo.show();
                         this.el.imgDefaultPanelEditProfile.hide();
+
+                        let photo2 = this.el.myPhoto.querySelector('img');
+                        photo2.src = data.photo;
+                        photo2.show();
                     }
 
                 });
+                
+                this._user.name = res.user.displayName;
+                this._user.email = res.user.email;
+                this._user.photo = res.user.photoURL;
 
-                userRef.set({
-                    name: res.user.displayName,
-                    email: res.user.email,
-                    photo: res.user.photoURL
-                }).then(()=>{
+                this._user.save().then(()=>{
                     this.el.appContent.css({
                         display:'flex'
                     });
                 });
-
-
+                
             })
             .catch(err =>{
                 console.error(err);
