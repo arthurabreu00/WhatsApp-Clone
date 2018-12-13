@@ -29,6 +29,18 @@ export class WhatsAppController {
 
                 let userRef = User.findByEmail(res.user.email);
 
+                this._user.on('datachange', data=>{
+                    document.querySelector('title').innerHTML = data.name + ' - WhatsApp Clone';
+
+                    if(data.photo){
+                        let photo = this.el.imgPanelEditProfile;
+                        photo.src = data.photo;
+                        photo.show();
+                        this.el.imgDefaultPanelEditProfile.hide();
+                    }
+
+                });
+
                 userRef.set({
                     name: res.user.displayName,
                     email: res.user.email,
