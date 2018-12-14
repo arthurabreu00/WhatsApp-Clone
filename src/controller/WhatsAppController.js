@@ -9,22 +9,21 @@ export class WhatsAppController {
 
     constructor() {
 
-        console.log('Server OK')
-        
-       
-        this.elementsPrototype();
-        this.loadElements();
-        this.initEvents();
-        this._firebase = new Firebase();
-        this.initAuth();
+        this.elementsPrototype(); // Carregando os prototypes.
+        this.loadElements(); // Carregando os elementos da tela
+        this.initEvents(); // Inicializando as escutas e eventos
+        this._firebase = new Firebase(); // Inicializando o banco de dados
+        this.initAuth(); // Autentificação do usuario
     }
 
     initAuth(){
 
-        this.el.appContent.hide();
+        this.el.appContent.hide(); // Não demonstra a aplicação, enquanto estiver logando
 
+        // Parte de autentificação do usuario
         this._firebase.initAuth()
             .then((res) =>{
+                // Declarando um novo usuario, utilizando como chave o email.
                 this._user = new User(res.user.email);
 
                 this._user.on('datachange', data=>{
@@ -32,23 +31,30 @@ export class WhatsAppController {
 
                     this.el.inputNamePanelEditProfile.innerHTML = data.name;
 
+                    // Se existir uma foto no firebase...
                     if(data.photo){
+                        // Foto maior, dentro da parte pessoal.
                         let photo = this.el.imgPanelEditProfile;
                         photo.src = data.photo;
                         photo.show();
                         this.el.imgDefaultPanelEditProfile.hide();
 
-                        let photo2 = this.el.myPhoto.querySelector('img');
-                        photo2.src = data.photo;
-                        photo2.show();
+                        // Foto em miniatura (Ao abrir a aplicação)
+                        let photo2 = this.el.myPhoto.querySelector('img'); // Selecionando a imagem
+                        photo2.src = data.photo; // Substituindo pela a imagem que veio do firebase
+                        photo2.show(); // Mostrando a foto
                     }
 
-                });
-                
+                    this.initContacts(); // Carregando a lista de contatos
+
+                });  // Fim da promessa, da inicialização da firebase (sucess).
+
+                // Em caso de sucesso, levar para a aplicação os dados do firebase: nome,email e foto.
                 this._user.name = res.user.displayName;
                 this._user.email = res.user.email;
                 this._user.photo = res.user.photoURL;
 
+                // Após o usuario ser autentificado, mostrar a tela com seus dados.
                 this._user.save().then(()=>{
                     this.el.appContent.css({
                         display:'flex'
@@ -57,9 +63,14 @@ export class WhatsAppController {
                 
             })
             .catch(err =>{
-                console.error(err);
+                console.error(err); //  Em caso de erro, demonstre...
             });
-    }
+    } // Fechando o método initAuth()
+
+    initContacts(){
+        // Método para carregar a lista de contatos
+
+    }// Fechando o método initContacts()
 
 
     loadElements() {
@@ -252,6 +263,21 @@ export class WhatsAppController {
                 e.preventDefault();
 
                 let formData = new FormData(this.el.formPanelAddContact);
+
+                let contact = new User(formData.get('email'));
+                contact.on('datachange', data =>{
+                    if(data.name){
+                        this._user.addContact(contact).then(()=>{
+                            console.info('Contato foi adicionado')
+                            this.el.btnClosePanelAddContact.click();
+                        }).catch(err =>{
+                            console.error(err);
+                        });
+                    }else{
+                        console.error('Usuario não foi encontrado')
+                    }
+                })
+                
 
             });
 
@@ -552,11 +578,10 @@ export class WhatsAppController {
 
 
             this.el.panelEmojis.querySelectorAll('.emojik').forEach(emoji =>{
-
+                // Selecionando todos os emojis
                 emoji.on('click',()=>{
-                    console.log(emoji.dataset.unicode);
 
-                    let img = this.el.imgEmojiDefault.cloneNode();
+                    let img = this.el.imgEmojiDefault.cloneNode(); // Concatenando multiplos emojis
                     
                     img.style.cssText = emoji.style.cssText;
                     img.dataset.unicode = emoji.dataset.unicode;    

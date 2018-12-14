@@ -6,9 +6,11 @@ export class User extends Model{
     // Está classe extende de model, que este de classEvent, ou seja, ela é uma classe neta.
     constructor(id){
         super();
-        this._data = {};
+        this._data = {}; 
 
-        if(id) this.getById(id); // Se foi passado um email...
+        if(id){ 
+            this.getById(id)
+        }; // Se foi passado um email...
     }
 
 
@@ -21,6 +23,8 @@ export class User extends Model{
 
     get photo(){ return this._data.photo}
     set photo(value){this._data.photo = value;}
+
+
 
     // Fornecendo o ID, para a aplicação
     getById(id){
@@ -51,4 +55,13 @@ export class User extends Model{
         return User.getRef().doc(email);
     }// Fim do método findByEmail();
 
+    // Método para adiconar contatos ao usuario
+    addContact(contact){
+        // Adicionando mais um nó (coleção), no banco de dados para os contatos do usuario.
+
+        return User.findByEmail(this.email)
+        .collection('contacts')
+        .doc(btoa(contact.email))
+        .set(contact.toJSON());
+    } // Fim do método addContact();
 }
