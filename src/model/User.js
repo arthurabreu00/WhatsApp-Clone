@@ -1,5 +1,6 @@
 import {Firebase} from './../util/Firebase';
 import { Model } from './model';
+import { promises } from 'fs';
 
 
 export class User extends Model{
@@ -23,8 +24,6 @@ export class User extends Model{
 
     get photo(){ return this._data.photo}
     set photo(value){this._data.photo = value;}
-
-
 
     // Fornecendo o ID, para a aplicação
     getById(id){
@@ -50,6 +49,10 @@ export class User extends Model{
         return Firebase.db().collection('/users');
     } // Ordenando-o no firebase, de maneitra correta.
 
+    static getContactsRef(id){
+        return User.getRef().doc(id).collection('contacts');
+    }
+
     // Procurando o email, entre os cadastrados.
     static findByEmail(email){
         return User.getRef().doc(email);
@@ -58,10 +61,32 @@ export class User extends Model{
     // Método para adiconar contatos ao usuario
     addContact(contact){
         // Adicionando mais um nó (coleção), no banco de dados para os contatos do usuario.
-
-        return User.findByEmail(this.email)
-        .collection('contacts')
-        .doc(btoa(contact.email))
-        .set(contact.toJSON());
+        return User.getContactsRef().doc(btoa(contact.email)).set(contact.toJSON());
     } // Fim do método addContact();
+
+    getContacts(){
+        // Método para retornar a lita de amigos de um úsuario.
+        return new Promise((s,f)=>{
+            User.getContactsRef(this.email).onSnapshot(docs =>{
+
+                let contacts = [];
+                
+                docs.forEach(doc =>{
+
+                    let data = doc.data();
+                    data.id = doc.id;
+                    contacts.push(data);
+
+                });
+
+                this.trigger('contactschange',docs);
+
+                s(contacts);
+
+            });
+
+            f('Erro no getContacts()');
+
+        });
+    }
 }
