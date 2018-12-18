@@ -5,7 +5,7 @@ import {DocumentPreviewController} from './DocumentPreviewController';
 import {Firebase} from './../util/Firebase';
 import {User} from './../model/User';
 import {Chat} from './../model/Chat';
-
+import {Message} from './../model/Message';
 
 
 export class WhatsAppController {
@@ -144,23 +144,7 @@ export class WhatsAppController {
 
                 // Quando clicarem na div de contato, faça...
                 div.on('click',e =>{
-                    
-                    // Atualizando a tela principal de conversa, parte superior
-                    this.el.activeName.innerHTML = contact.name;
-                    this.el.activeStatus.innerHTML = contact.status;
-
-                    if(contact.photo){
-                        // If muito parecido com o acima.
-                        let img = this.el.activePhoto;
-                        img.src = contact.photo; 
-                        img.show(); 
-                    }
-
-                    this.el.home.hide();
-                    this.el.main.css({
-                        display: 'flex'
-                    });
-
+                    this.setActiveChat(contact);
                 });
 
                 this.el.contactsMessagesList.appendChild(div); // Jutando e mostrando as  divs criadas.
@@ -671,9 +655,16 @@ export class WhatsAppController {
 
         this.el.btnSend.on('click', () => {
 
-            let txt = this.el.inputText.innerHTML;
-            console.log(txt);
+            Message.send(
+                this._contactActive.chatId,
+                this._user.email,
+                'text',
+                this.el.inputText.innerHTML
+            ); // Enviando da mensagem
+
+            // Limpando o input de envio de texto/emoji.
             this.el.inputText.innerHTML = "";
+            this.el.panelEmojis.removeClass('open');
             this.el.inputPlaceholder.show();
 
         }) // Botão de envio de mensagem.
@@ -736,7 +727,27 @@ export class WhatsAppController {
 
     } // Fechando o método initEvents()
 
+    setActiveChat(contact){
 
+        // Salvando qual o contato ativo.
+        this._contactActive = contact;
+
+        // Atualizando a tela principal de conversa, parte superior
+        this.el.activeName.innerHTML = contact.name;
+        this.el.activeStatus.innerHTML = contact.status;
+
+        if (contact.photo) {
+            // If muito parecido com o acima.
+            let img = this.el.activePhoto;
+            img.src = contact.photo;
+            img.show();
+        }
+
+        this.el.home.hide();
+        this.el.main.css({
+            display: 'flex'
+        });
+    }
 
     closeRecordMicrophone() {
 
