@@ -151,6 +151,27 @@ export class WhatsAppController {
                     img.show(); // Mostrando a imagem de fato.
                 }
 
+                // Quando clicarem na div de contato, faça...
+                div.on('click',e =>{
+                    
+                    // Atualizando a tela principal de conversa, parte superior
+                    this.el.activeName.innerHTML = contact.name;
+                    this.el.activeStatus.innerHTML = contact.status;
+
+                    if(contact.photo){
+                        // If muito parecido com o acima.
+                        let img = this.el.activePhoto;
+                        img.src = contact.photo; 
+                        img.show(); 
+                    }
+
+                    this.el.home.hide();
+                    this.el.main.css({
+                        display: 'flex'
+                    });
+
+                });
+
                 this.el.contactsMessagesList.appendChild(div); // Jutando e mostrando as  divs criadas.
             });
 

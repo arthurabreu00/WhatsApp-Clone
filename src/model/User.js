@@ -59,7 +59,7 @@ export class User extends Model{
     // Método para adiconar contatos ao usuario
     addContact(contact){
         // Adicionando mais um nó (coleção), no banco de dados para os contatos do usuario.
-        return User.getContactsRef().doc(btoa(contact.email)).set(contact.toJSON());
+        return User.getContactsRef(this.email).doc(btoa(contact.email)).set(contact.toJSON());
     } // Fim do método addContact();
 
     getContacts(){
@@ -82,9 +82,6 @@ export class User extends Model{
                 s(contacts);
 
             });
-
-            f('Erro no getContacts()');
-
         });
     }
 }
