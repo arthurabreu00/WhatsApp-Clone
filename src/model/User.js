@@ -1,7 +1,5 @@
 import {Firebase} from './../util/Firebase';
 import { Model } from './model';
-import { promises } from 'fs';
-
 
 export class User extends Model{
     // Está classe extende de model, que este de classEvent, ou seja, ela é uma classe neta.
