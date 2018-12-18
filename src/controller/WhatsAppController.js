@@ -1,21 +1,12 @@
-import {
-    Format
-} from './../util/Format';
-import {
-    CameraController
-} from './CameraController';
-import {
-    MicrophoneController
-} from './MicrophoneController';
-import {
-    DocumentPreviewController
-} from './DocumentPreviewController';
-import {
-    Firebase
-} from './../util/Firebase';
-import {
-    User
-} from '../model/User';
+import {Format} from './../util/Format';
+import {CameraController} from './CameraController';
+import {MicrophoneController} from './MicrophoneController';
+import {DocumentPreviewController} from './DocumentPreviewController';
+import {Firebase} from './../util/Firebase';
+import {User} from './../model/User';
+import {Chat} from './../model/Chat';
+
+
 
 export class WhatsAppController {
 
@@ -336,10 +327,10 @@ export class WhatsAppController {
             this.el.btnSavePanelEditProfile.disabled = true;
 
             this._user.name = app.el.inputNamePanelEditProfile.innerHTML;
-            console.log(this._user.name);
-
+            
             this._user.save().then(() => {
                 this.el.btnSavePanelEditProfile.disabled = false;
+                this.el.btnClosePanelEditProfile.click();
             }).catch(err => {
                 console.error(err);
             });
@@ -377,12 +368,25 @@ export class WhatsAppController {
             let contact = new User(formData.get('email'));
             contact.on('datachange', data => {
                 if (data.name) {
-                    this._user.addContact(contact).then(() => {
+
+                Chat.createIfNotExists(this._user.email, contact.email).then(chat =>{
+                    
+                    // Amarrando o chat a algum contato, definindo Id's.
+                    contact.chatId = chat.id;
+                    this._user.chatId = chat.id;
+
+                    contact.addContact(this._user);
+
+                    //Promessa que adiciona o contato.
+                    this._user.addContact(contact).then(()=> {
                         console.info('Contato foi adicionado')
                         this.el.btnClosePanelAddContact.click();
                     }).catch(err => {
                         console.error(err);
                     });
+                });
+
+
                 } else {
                     console.error('Usuario não foi encontrado')
                 }
