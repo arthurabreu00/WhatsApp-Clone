@@ -12,7 +12,7 @@ export class Format{
         //Utilizando o data-set, Converte em camel case retirando o '-' e colcando a letra a seguir Maiuscula.
 
         return Object.keys(div.firstChild.dataset)[0]  // Retornando um elemento por vez;
-
+        
     }
 
 
