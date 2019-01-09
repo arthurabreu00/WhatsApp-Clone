@@ -1,4 +1,4 @@
-// Classe de exportação e comfiguração do firebase
+// Classe de exportação e configuração do firebase
 const firebase = require('firebase');
 require('firebase/firestore')
 

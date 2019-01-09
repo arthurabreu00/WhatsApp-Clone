@@ -269,6 +269,21 @@ export class WhatsAppController {
 
         /* INICIO -- MÉTODOS RELACIONADOS A EDIÇÃO DE INFORMAÇÕES DO PERFIL DO ÚSUARIO */
 
+        
+        this.el.inputSeachContacts.on('keyup', e =>{
+            
+            // Retirando o placeholder.
+           if (this.el.inputSeachContacts.value.length > 0){
+            this.el.inputSeachContactsPlaceholder.hide();
+           }else{
+            this.el.inputSeachContactsPlaceholder.show();
+           }
+
+           this._user.getContacts(this.el.inputSeachContacts.value);
+           
+
+        }); // Campo de buscas de contatos.
+
         this.el.myPhoto.on('click', () => {
 
             this.closeAllLeftPanels();
@@ -732,7 +747,7 @@ export class WhatsAppController {
         // Salvando qual o contato ativo.
 
         if(this._contactActive){
-            Message.getRef(this._contactActive.chatId).onSnapshot(()=>{});
+            Message.getRef(this._contactActive.chatId).onSnapshot(()=> { });
         }
 
         this._contactActive = contact;
@@ -753,22 +768,45 @@ export class WhatsAppController {
             display: 'flex'
         });
 
+        this.el.panelMessagesContainer.innerHTML = '';
+
         Message.getRef(this._contactActive.chatId).orderBy('timeStamp').onSnapshot(docs=>{
-            this.el.panelMessagesContainer.innerHTML = '';
+          
+
+            let scrollTop = this.el.panelMessagesContainer.scrollTop;
+            let scrollTopMax = this.el.panelMessagesContainer.scrollHeight  - this.el.panelMessagesContainer.offsetHeight;
+            let autoScroll = (scrollTop >= scrollTopMax);
 
             docs.forEach(doc =>{
                 let data = doc.data();
+                data.id = doc.id;
+
                 let message = new Message();
 
                 message.fromJSON(data);
 
-                let me = (data.from === this._user.email);
-                let view = message.getViewElement(me);
+                if(!this.el.panelMessagesContainer.querySelector('#_'+data.id)){
+                    
+                    let me = (data.from === this._user.email);
 
-                this.el.panelMessagesContainer.appendChild(view);
+                    let view = message.getViewElement(me);
 
+                    this.el.panelMessagesContainer.appendChild(view);
+
+                }else{
+
+                    let msgEl = this.el.panelMessagesContainer.querySelector('#_'+data.id);
+
+                    msgEl.querySelector('.message-status').innerHTML = message.getStatusViewElement().outerHTML;
+                }
 
             });
+
+            if(autoScroll){
+                this.el.panelMessagesContainer.scrollTop = this.el.panelMessagesContainer.scrollHeight  - this.el.panelMessagesContainer.offsetHeight;
+            }else{
+                this.el.panelMessagesContainer.scrollTop = scrollTop;
+            }
 
         })
     }

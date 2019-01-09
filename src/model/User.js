@@ -65,13 +65,15 @@ export class User extends Model{
         return User.getContactsRef(this.email).doc(btoa(contact.email)).set(contact.toJSON());
     } // Fim do método addContact();
 
-    getContacts(){
+    getContacts(filter = ''){
         // Método para retornar a lita de amigos de um úsuario.
         return new Promise((s,f)=>{
-            User.getContactsRef(this.email).onSnapshot(docs =>{
+            // Aqui ocorre o filtro de usuarios tambem,na condição where.
+            User.getContactsRef(this.email).where('name','>=',filter).onSnapshot(docs =>{
 
                 let contacts = [];
                 
+                // Pegando usuario, por usuario.
                 docs.forEach(doc =>{
 
                     let data = doc.data();

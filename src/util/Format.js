@@ -1,3 +1,5 @@
+import { type } from "os";
+
 export class Format{
 
 
@@ -27,7 +29,17 @@ export class Format{
         }else{
             return minutes + ':' + seconds;
         }
+    }
 
+    static timeStampToTime(timeStamp){
+        return (timeStamp && typeof timeStamp.toDate === 'function') ? Format.dateToTime(timeStamp.toDate()) : '';
+    }
+
+    static dateToTime(date,locale = 'pt-BR'){
+        return date.toLocaleTimeString(locale,{
+            hour : '2-digit',
+            minute: '2-digit'
+        });
     }
 
 }
