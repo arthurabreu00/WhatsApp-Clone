@@ -9,7 +9,7 @@ export class Firebase {
             authDomain: "whatsapp-clone-acfaa.firebaseapp.com",
             databaseURL: "https://whatsapp-clone-acfaa.firebaseio.com",
             projectId: "whatsapp-clone-acfaa",
-            storageBucket: "whatsapp-clone-acfaa.appspot.com",
+            storageBucket: "gs://whatsapp-clone-acfaa.appspot.com",
             messagingSenderId: "275534463411"
         }
         this.init();
@@ -32,6 +32,7 @@ export class Firebase {
 
     // Método estatico, de acesso facil ao banco de dados e suas funcionalidades
     static db(){
+        
         return firebase.firestore();
     }
 

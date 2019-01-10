@@ -426,10 +426,11 @@ export class WhatsAppController {
 
         this.el.inputPhoto.on('change', e => {
 
-            console.log(this.el.inputPhoto.files);
-
+            // Pecorrendo as fotos selecionadas.
             [...this.el.inputPhoto.files].forEach(file => {
-                console.log(file);
+                
+                Message.sendImage(this._contactActive.chatId,this._user,file); // Método para envio das mensagem.
+
             })
 
         }); // Observando mudanças e arquivos enviados via botão foto.
@@ -785,19 +786,31 @@ export class WhatsAppController {
 
                 message.fromJSON(data);
 
+                       
+                let me = (data.from === this._user.email);
+
                 if(!this.el.panelMessagesContainer.querySelector('#_'+data.id)){
-                    
-                    let me = (data.from === this._user.email);
+             
+
+                    if(!me){
+                        doc.ref.set({
+                            status: 'read'
+                        },{
+                            merge:true
+                        });
+                    }
 
                     let view = message.getViewElement(me);
 
                     this.el.panelMessagesContainer.appendChild(view);
 
-                }else{
+                }else if(me){
 
                     let msgEl = this.el.panelMessagesContainer.querySelector('#_'+data.id);
 
                     msgEl.querySelector('.message-status').innerHTML = message.getStatusViewElement().outerHTML;
+
+
                 }
 
             });
