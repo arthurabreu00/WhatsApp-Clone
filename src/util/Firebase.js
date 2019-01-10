@@ -1,65 +1,81 @@
 // Classe de exportação e configuração do firebase
 const firebase = require('firebase');
-require('firebase/firestore')
+require('firebase/firestore');
 
 export class Firebase {
-    constructor(){
-        this._config =  {
+
+    constructor() {
+
+        this._config = {
             apiKey: "AIzaSyAX_X4rajAoFXhYbRXWaDPQ6VdKxKKS2r0",
             authDomain: "whatsapp-clone-acfaa.firebaseapp.com",
             databaseURL: "https://whatsapp-clone-acfaa.firebaseio.com",
             projectId: "whatsapp-clone-acfaa",
-            storageBucket: "gs://whatsapp-clone-acfaa.appspot.com",
+            storageBucket: "whatsapp-clone-acfaa.appspot.com",
             messagingSenderId: "275534463411"
-        }
+        };
+
         this.init();
+
     }
 
-    init(){
-          // Inicializando o Firebase
-        if(!window.initializeFirebase){
-            // Verificando se ja foi iniciado. Para evitar erros e sobre-cargas
+    init() {
+
+        // veririfcando se o Firebase já está inicializado para evitar que se tente
+        // inicializar duas vezes. Colocamos na var window para que seja global
+        // e, assim, poder ser acessada e ter o mesmo valor em outras chamadas
+        if (!window._initializedFirebase) {
+
             firebase.initializeApp(this._config);
 
+            // como o Firebase ficará em constante uso, precisamos ativar essa opção
             firebase.firestore().settings({
-                timestampsInSnapshots : true
-            })
+                timestampsInSnapshots: true
+            });
 
-            window.initializeFirebase = true;
+            window._initializedFirebase = true;
+
         }
-          
+
     }
 
-    // Método estatico, de acesso facil ao banco de dados e suas funcionalidades
-    static db(){
-        
+    // Acionando o banco de dados, firestore.
+    static db() {
+
         return firebase.firestore();
+
     }
 
-    static hd(){
-        return firebase.storage();
-    }   
+    // Acionando módulo de armazanamento de arquivos.
+    static hd() {
 
-    // Parte da autentificação do usuario
-    initAuth(){
-        return new Promise((s,f)=>{
-            // Escolhando um provedor de usuario, no caso o google/gmail.
+        return firebase.storage();
+
+    }
+
+    initAuth() {
+
+        return new Promise((s, f) => {
+
+            // Adicionar a um provedor de acesso, no caso será o Google.
             let provider = new firebase.auth.GoogleAuthProvider();
 
-            firebase.auth().signInWithPopup(provider)
-                .then(result =>{
-                    // Obtendo token de acesso e outras informações necessárias.
-                    let token = result.credential.accessToken;
-                    let user = result.user;
+            firebase.auth().signInWithPopup(provider).then(result => {
 
-                    s({user,token});
-                })
-                .catch(err =>{
+                let token = result.credential.accessToken;
+                let user = result.user;
+
+                s({
+                    user,
+                    token
+                });
+
+            }).catch(err => {
                 f(err);
-            })
+            });
 
         });
+
     }
 
 }
-  

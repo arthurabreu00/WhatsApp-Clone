@@ -323,19 +323,19 @@ export class Message extends Model{
     } // Fim do método getRef();
 
     static sendImage(chatId, from, file){
-     
-    return new Promise((s, f) => {
-
-        let uploadTask = Firebase.hd().ref(from).child(Date.now() + '_' + file.name).put(file);
-
-        uploadTask.on('state_changed', e => {
-
-            console.info('upload', e);
-
+            
+        return new Promise((s, f) => {
+ 
+            let uploadTask = Firebase.hd().ref(from).child(Date.now() + '_' + file.name).put(file);
+ 
+            uploadTask.on('state_changed', e => {
+ 
+                console.info('upload', e);
+ 
             }, err => {
                 console.error(err)
             }, () => {
-
+ 
                 uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
                     Message.send(
                         chatId, 
@@ -346,11 +346,11 @@ export class Message extends Model{
                         s();
                     });
                 });
-            
+         
             });
-     
+ 
         });
-     
+    
     }// Fim do método sendImage();
 
      

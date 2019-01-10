@@ -1,11 +1,11 @@
-import {Format} from './../util/Format';
-import {CameraController} from './CameraController';
-import {MicrophoneController} from './MicrophoneController';
-import {DocumentPreviewController} from './DocumentPreviewController';
-import {Firebase} from './../util/Firebase';
-import {User} from './../model/User';
-import {Chat} from './../model/Chat';
-import {Message} from './../model/Message';
+import { Format } from './../util/Format';
+import { CameraController } from './CameraController';
+import { MicrophoneController } from './MicrophoneController';
+import { DocumentPreviewController } from './DocumentPreviewController';
+import { Firebase } from './../util/Firebase';
+import { User } from './../model/User';
+import { Chat } from './../model/Chat';
+import { Message } from './../model/Message';
 
 
 export class WhatsAppController {
@@ -424,14 +424,19 @@ export class WhatsAppController {
             this.el.inputPhoto.click();
         }); // Dentro do clip, botão para adicionar fotos a conversa.
 
-        this.el.inputPhoto.on('change', e => {
+        this.el.inputPhoto.on('change', ()=> {
 
-            // Pecorrendo as fotos selecionadas.
+            // Pecorrendo as fotos selecionadas. 
+            // Uma coleção transformada em um array...
             [...this.el.inputPhoto.files].forEach(file => {
                 
-                Message.sendImage(this._contactActive.chatId,this._user,file); // Método para envio das mensagem.
+                Message.sendImage(
+                    this._contactActive.chatId,
+                    this._user,
+                    file
+                ); // Método para envio das mensagem.
 
-            })
+            });
 
         }); // Observando mudanças e arquivos enviados via botão foto.
 
