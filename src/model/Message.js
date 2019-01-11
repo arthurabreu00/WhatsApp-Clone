@@ -5,6 +5,7 @@ import { Format } from '../util/Format';
 export class Message extends Model{
     constructor(){
         super();
+        this.status ='wait';
     }
     // Setando os valores, da classe HORA, TIPO E CONTEUDO.
     get content(){return this._data.content}
@@ -300,8 +301,10 @@ export class Message extends Model{
                 from
             }).then(result =>{
 
+                this.status ='sended';
+
                 result.parent.doc(result.id).set({
-                    status: 'sent'
+                    status: 'sended'
                 },{
                     merge:true
                 }).then(()=>{
@@ -318,8 +321,12 @@ export class Message extends Model{
     } // Fim do método send();
 
     static getRef(chatId){
-        return Firebase.db().collection('chats').doc(chatId).collection('messages');
 
+            return Firebase.db()
+            .collection('chats')
+            .doc(chatId)
+            .collection('messages');
+       
     } // Fim do método getRef();
 
     static sendImage(chatId, from, file){
@@ -356,6 +363,7 @@ export class Message extends Model{
      
      getStatusViewElement(){
 
+
      // Método para verificar o status da aplicação e aplicar o icone correto (Em espera, enviado, recebido e visto).
         let messageStatusEl = document.createElement('div');
 
@@ -373,7 +381,7 @@ export class Message extends Model{
                     `;
                 break;
 
-            case 'sent':
+            case 'sended':
                 messageStatusEl.innerHTML = `
                         <span data-icon="msg-check" class="">
                             <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 15" width="16" height="15">
