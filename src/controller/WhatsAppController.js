@@ -26,6 +26,7 @@ export class WhatsAppController {
         // Parte de autentificação do usuario
         this._firebase.initAuth()
             .then((res) => {
+    
                 // Declarando um novo usuario, utilizando como chave o email.
                 this._user = new User(res.user.email);
 
@@ -432,7 +433,7 @@ export class WhatsAppController {
                 
                 Message.sendImage(
                     this._contactActive.chatId,
-                    this._user,
+                    this._user.email,
                     file
                 ); // Método para envio das mensagem.
 
@@ -486,8 +487,33 @@ export class WhatsAppController {
 
         })
 
-        this.el.containerSendPicture.on('click', () => {
-            console.log('Enviando a foto...', this.el.pictureCamera.src);
+        this.el.btnSendPicture.on('click', () => {
+
+            this.el.btnSendPicture.disabled = true;
+
+
+
+            let picture = new Image();
+            picture.src  = tthis.el.pictureCamera.src;
+            picture.onload(e =>{
+                let canvas = document.createElement('canvas');
+                canvas.getContext('2d');
+            
+                canvas.width(picture.width);
+                canvas.height(picture.height);
+
+                context.translate(picture.width,0);
+                context.scale(-1,1);
+                context.drawImage(picture, 0 , 0 , canvas.width,canvas.height);
+
+                
+            });
+
+
+ 
+
+            this.el.btnSendPicture.disabled = false;
+
         })
 
 
@@ -583,7 +609,14 @@ export class WhatsAppController {
 
         this.el.btnSendDocument.on('click', () => {
 
-            console.log('Enviando documento...');
+           let file = this.el.inputDocument.files[0];
+           let base64 =this.el.imagePanelDocumentPreview.src;
+
+           Message.sendDocument(
+               this._contactActive.chatId,
+               from,file,
+               base64);
+
 
         }); // Enviando o documento dentro da convesa. 
 
