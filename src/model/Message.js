@@ -1,32 +1,49 @@
-import { Model } from "./model";
-import { Firebase } from "../util/Firebase";
-import { Format } from '../util/Format';
+import {Model} from "./model";
+import {Firebase} from "../util/Firebase";
+import {Format} from '../util/Format';
+import {Base64} from '../util/Base64';
 
-export class Message extends Model{
-    constructor(){
+export class Message extends Model {
+    constructor() {
         super();
-        this.status ='wait';
+        this.status = 'wait';
     }
     // Setando os valores, da classe HORA, TIPO E CONTEUDO.
-    get content(){return this._data.content}
-    set content(value){this._data.content = value}
+    get content() {
+        return this._data.content
+    }
+    set content(value) {
+        this._data.content = value
+    }
 
-    get id(){return this._data.id}
-    set id(value){this._data.id = value}
+    get id() {
+        return this._data.id
+    }
+    set id(value) {
+        this._data.id = value
+    }
 
-    get type(){return this._data.type}
-    set type(value){this._data.type = value}
+    get type() {
+        return this._data.type
+    }
+    set type(value) {
+        this._data.type = value
+    }
 
-    get timeStamp(){return this._data.timeStamp}
-    set timeStamp(value){this._data.timeStamp = value}
+    get timeStamp() {
+        return this._data.timeStamp
+    }
+    set timeStamp(value) {
+        this._data.timeStamp = value
+    }
 
-    getViewElement(me = true){
-    // Método para identificar o tipo da mensagem e o tratamento dos mesmos.        
+    getViewElement(me = true) {
+        // Método para identificar o tipo da mensagem e o tratamento dos mesmos.        
         let div = document.createElement('div');
         div.className = 'message'; // Criando elemento de cada mensagem.
 
         // Tratamento do HTML das messagens, para os diversos tipos.
-        switch(this.type){
+        switch (this.type) {
             // Caso seja um contato.
             case 'contact':
                 div.innerHTML = `
@@ -67,11 +84,11 @@ export class Message extends Model{
 
             </div>
                 `;
-            break;
+                break;
 
             case 'image':
-            // Caso seja uma imagem.
-            
+                // Caso seja uma imagem.
+
                 div.innerHTML = `<div class="_3_7SH _3qMSo" id="_${this.id}>
                 <div class="KYpDv">
                     <div>
@@ -95,11 +112,7 @@ export class Message extends Model{
                             <img src="${this.content}" class="_1JVSX message-photo" style="width: 100%; display:none">
                             <div class="_1i3Za"></div>
                         </div>
-                        <div class="message-container-legend">
-                            <div class="_3zb-j ZhF0n">
-                                <span dir="ltr" class="selectable-text invisible-space copyable-text message-text">Texto da foto</span>
-                            </div>
-                        </div>
+
                         <div class="_2TvOE">
                             <div class="_1DZAH text-white" role="button">
                                 <span class="message-time">${Format.timeStampToTime(this.timeStamp)}</span>
@@ -118,16 +131,25 @@ export class Message extends Model{
             </div>
                 `;
 
-            div.querySelector('.message-photo').on('load',e =>{
+                div.querySelector('.message-photo');
 
-                console.log('Load OK',e);
+                div.querySelector('.message-photo').on('load', e => {
 
-            });
+                    div.querySelector('.message-photo').show();
+                    div.querySelector('.message-photo').querySelector('_340lu').hide();
+                    div.querySelector('.message-photo').querySelector('._3v3PK').css({
+                        height: 'auto'
+                    });
 
-            break;
+                    console.log(e);
+                    console.log(div.querySelector('.message-photo'));
+
+                });
+
+                break;
 
             case 'document':
-            // Caso seja uma mensagem documento.
+                // Caso seja uma mensagem documento.
                 div.innerHTML = `
                 <div class="_3_7SH _1ZPgd" id="_${this.id}>
                 <div class="_1fnMt _2CORf">
@@ -168,7 +190,7 @@ export class Message extends Model{
                 </div>
             </div>
                 `;
-            break;
+                break;
 
             case 'audio':
                 // Caso seja um audio.
@@ -250,11 +272,11 @@ export class Message extends Model{
                 </div>
             </div>
                 `;
-            break;
+                break;
 
             default:
-            // Caso seja uma mensagem comum.
-            div.innerHTML = `
+                // Caso seja uma mensagem comum.
+                div.innerHTML = `
                 
             <div class="font-style _3DFk6 tail" id="_${this.id}" >
             <span class="tail-container"></span>
@@ -272,17 +294,17 @@ export class Message extends Model{
             </div>
             `;
 
-            break;
+                break;
         } // Fim do Swith case
 
         // Mensagem enviada por mim ou para mim.
-        let className  = 'message-in'; 
+        let className = 'message-in';
         // Se (true) foi enviada por mim, senão(false), foi enviada para mim.
 
-        if(me){
+        if (me) {
             className = 'message-out';
             div.querySelector('.message-time').parentElement.appendChild(this.getStatusViewElement());
-        }   
+        }
 
         // Adicionando o elemento ao HTML.
         div.firstElementChild.classList.add(className);
@@ -290,81 +312,94 @@ export class Message extends Model{
         return div;
     }
 
-    static send(chatId,from,type,content){
+    static send(chatId, from, type, content) {
         // Método para envido da mensagem
-        return new Promise((s,f)=>{
+        return new Promise((s, f) => {
             Message.getRef(chatId).add({
                 content,
-                timeStamp:new Date(),
-                status:'wait',
+                timeStamp: new Date(),
+                status: 'wait',
                 type,
                 from
-            }).then(result =>{
+            }).then(result => {
 
-                this.status ='sended';
+                this.status = 'sended';
 
                 result.parent.doc(result.id).set({
                     status: 'sended'
-                },{
-                    merge:true
-                }).then(()=>{
+                }, {
+                    merge: true
+                }).then(() => {
                     s();
                 });
 
-            }).catch(e =>{
+            }).catch(e => {
                 f(e);
             });
 
         });
-    
+
 
     } // Fim do método send();
 
-    static getRef(chatId){
+    static getRef(chatId) {
 
-            return Firebase.db()
+        return Firebase.db()
             .collection('chats')
             .doc(chatId)
             .collection('messages');
-       
+
     } // Fim do método getRef();
 
-    static sendImage(chatId, from, file){
-            
-        return new Promise((s, f) => {
- 
-            let uploadTask = Firebase.hd().ref(from).child(Date.now() + '_' + file.name).put(file);
- 
-            uploadTask.on('state_changed', e => {
- 
-                console.info('upload', e);
- 
-            }, err => {
-                console.error(err)
-            }, () => {
- 
-                uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+    static upload(file) {
+        
+    }
+
+    static sendDocument(chatId,from,file,preview){
+
+        Base64.toFile(preview).then(filePreview =>{
+
+            return new Promise((s, f) => {
+
+                let uploadTask = Firebase.hd().ref(from).child(Date.now() + '_' + file.name).put(file);
+    
+                uploadTask.on('state_changed', e => {
+    
+                }, err => {
+                    console.error(err)
+                }, () => {
                     Message.send(
-                        chatId, 
-                        from, 
-                        'image', 
-                        downloadURL                    
+                        chatId,
+                        from,
+                        'image',
+                        uploadTask.snapshot.downloadURL
                     ).then(() => {
                         s();
+                    }).catch(e => {
+                        console.error(e);
+                        f(e);
                     });
                 });
-         
-            });
- 
-        });
     
-    }// Fim do método sendImage();
+            });
 
-     
-     getStatusViewElement(){
+        });
+
+    }
+
+    static sendImage(chatId, from, file) {
 
 
-     // Método para verificar o status da aplicação e aplicar o icone correto (Em espera, enviado, recebido e visto).
+
+
+    } // Fim do método sendImage();
+
+
+
+    getStatusViewElement() {
+
+
+        // Método para verificar o status da aplicação e aplicar o icone correto (Em espera, enviado, recebido e visto).
         let messageStatusEl = document.createElement('div');
 
         messageStatusEl.classList.add('message-status');
@@ -416,5 +451,5 @@ export class Message extends Model{
         return messageStatusEl;
 
     }
-    
+
 }
